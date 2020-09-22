@@ -1,61 +1,33 @@
-import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
+import client.Client;
+import client.ClientConnection;
+import data.Request;
+import data.Response;
+import server.Server;
+import server.ServerConnection;
+
+import java.io.IOException;
 
 public class Main{
     public static void main(String[] args){
-        final int PORT = 8080;
+        Server server = Server.getInstance();
+        Client client = Client.getInstance();
+
+        ServerConnection serverConnection = server.acceptConnection();
+        Request request = serverConnection.readRequest();
+
+        ClientConnection clientConnection = null;
         try {
-            ServerSocket serverSocket = new ServerSocket(PORT);
-            while (true) {
-                Socket socket = serverSocket.accept();
+            clientConnection = client.getConnection(request.host);
+            clientConnection.writeRequest(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-                System.out.println("creatig streams....");
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        Response response = clientConnection.readResponse();
+        System.out.print("'"+response.data+"'");
 
-                while (true) {
-                    System.out.println("reading message....");
-                    String s = bufferedReader.readLine();
-                    String msg = "";
-
-                    while (!s.equals("")){
-                        msg += s + "\n";
-                        s = bufferedReader.readLine();
-                    }
-
-                    System.out.println(msg);
-                    String host = msg.split("\n")[1].split(" ")[1];
-                    System.out.println(host);
-
-                    Socket clientSocket = new Socket(host, 80);
-                    BufferedWriter clientWriter = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-                    BufferedReader clientReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                    System.out.println("Created client socket");
-
-                    msg = msg.replace("\n", "\r\n") + "\r\n";
-                    System.out.println("masg: "+ msg);
-
-                    clientWriter.write(msg);
-                    clientWriter.flush();
-                    System.out.println("sent message to the server");
-
-                    String r = clientReader.readLine();
-                    String response = "";
-
-                    while (r != null){
-                        response += r + "\n";
-                        r = clientReader.readLine();
-                    }
-                    System.out.println("Read the response");
-
-                    System.out.println(response);
-                    System.out.println("-----------");
-
-                    bufferedWriter.write(response);
-                    bufferedWriter.flush();
-                }
-            }
+        try {
+            serverConnection.writeResponse(response);
         } catch (IOException e) {
             e.printStackTrace();
         }
