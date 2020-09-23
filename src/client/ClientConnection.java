@@ -13,10 +13,23 @@ public class ClientConnection {
     private final BufferedReader reader;
     private final BufferedWriter writer;
 
-    public ClientConnection(String hostname) throws IOException {
+    private final ServerClientMediator mediator;
+
+    public ClientConnection(String hostname, ServerClientMediator mediator) throws IOException {
         this.socket = new Socket(hostname, PORT);
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+        this.mediator = mediator;
+    }
+
+    public void receiveMessage(Request request){
+        try {
+            writeRequest(request);
+            mediator.messageServer(readResponse());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Response readResponse(){
@@ -35,7 +48,6 @@ public class ClientConnection {
 
             if (contentLength > 0) {
                 char[] buffer = new char[contentLength];
-                System.out.println(reader.read(buffer));
                 stringBuilder.append(buffer);
             }
 

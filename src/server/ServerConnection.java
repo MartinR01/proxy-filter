@@ -1,5 +1,6 @@
 package server;
 
+import client.ServerClientMediator;
 import data.Request;
 import data.Response;
 
@@ -11,19 +12,48 @@ public class ServerConnection {
     private final BufferedReader reader;
     private final BufferedWriter writer;
 
+    private final ServerClientMediator mediator;
+
     public ServerConnection(Socket socket) throws IOException{
         this.socket = socket;
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+        this.mediator = new ServerClientMediator(this);
     }
 
-    public Request readRequest() {
+    public void run(){
+        try {
+            Request request = readRequest();
+            if(request == null){
+                return;
+            }
+            mediator.messageClient(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void receiveMessage(Response response){
+        try {
+            writeResponse(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        run();
+    }
+
+    public Request readRequest() throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
-        String line;
+        String line = reader.readLine();
 
         try{
-            while(!(line = reader.readLine()).equals("")){
+            while(line != null && !line.equals("")){
                 stringBuilder.append(line).append("\r\n");
+                line = reader.readLine();
+            }
+            if(stringBuilder.length() == 0){
+                return null;
             }
             stringBuilder.append("\r\n");
         } catch (IOException e){

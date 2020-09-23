@@ -1,7 +1,5 @@
 package server;
 
-import data.Response;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -22,20 +20,14 @@ public class Server {
         }
     }
 
-    public ServerConnection acceptConnection(){
+    public void acceptConnection(){
         try {
             ServerConnection connection = new ServerConnection(socket.accept());
             connections.add(connection);
-            return connection;
+            connection.run();
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
-    }
-
-    public ServerConnection getConnection(Response response){
-        // TODO
-        return null;
     }
 
     public static Server getInstance(){
