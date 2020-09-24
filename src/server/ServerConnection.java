@@ -64,7 +64,7 @@ public class ServerConnection {
     }
 
     public void writeResponse(Response response) throws IOException {
-        writer.write(response.data);
+        writer.write(response.getData());
         writer.flush();
     }
 

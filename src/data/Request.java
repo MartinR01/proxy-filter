@@ -2,7 +2,7 @@ package data;
 
 public class Request {
     public final String data;
-    public String host;
+    public final String host;
 
     public Request(String data) throws IllegalArgumentException{
         if (!data.contains("\r\n") && data.contains(" ")){

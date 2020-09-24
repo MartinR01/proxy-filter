@@ -40,7 +40,7 @@ public class ClientConnection {
         try{
             while(!(line = reader.readLine()).equals("")){
                 stringBuilder.append(line).append("\r\n");
-                if (line.startsWith("Content-Length")){
+                if (line.toLowerCase().startsWith("content-length")){
                     contentLength = Integer.parseInt(line.split(" ")[1]);
                 }
             }
