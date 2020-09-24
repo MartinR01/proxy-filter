@@ -48,6 +48,7 @@ public class ClientConnection {
 
             if (contentLength > 0) {
                 char[] buffer = new char[contentLength];
+                reader.read(buffer);
                 stringBuilder.append(buffer);
             }
 
