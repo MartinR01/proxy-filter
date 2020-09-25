@@ -7,6 +7,10 @@ import data.Response;
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * The class ServerConnection is responsible for developing the connection to the server through
+ * methods receiveMessage, readRequest and writeResponse.
+ */
 public class ServerConnection {
     private final Socket socket;
     private final BufferedReader reader;
@@ -14,6 +18,11 @@ public class ServerConnection {
 
     private final ServerClientMediator mediator;
 
+    /**
+     *
+     * @param socket this parameter is using for get input and output stream.
+     * @throws IOException Exceptions handled in case of bad input or output.
+     */
     public ServerConnection(Socket socket) throws IOException{
         this.socket = socket;
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -22,6 +31,9 @@ public class ServerConnection {
         this.mediator = new ServerClientMediator(this);
     }
 
+    /**
+     *
+     */
     public void run(){
         try {
             Request request = readRequest();
