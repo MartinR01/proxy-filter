@@ -19,8 +19,9 @@ public class ServerClientMediator {
         this.serverConnection = serverConnection;
 
         filters = new ArrayList<>();
-        filters.add(new Filter("Smiley", "Trolly"));
-        filters.add(new Filter("Stockholm", "Linköping"));
+//        filters.add(new Filter("Smiley", "Trolly"));
+//        filters.add(new Filter("Stockholm", "Linköping"));
+//        filters.add(new Filter("smiley.jpg", "trolly.jpg"));
     }
 
     public void messageClient(Request request) throws IOException {

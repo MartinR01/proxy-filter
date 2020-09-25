@@ -5,19 +5,20 @@ import data.Response;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class ClientConnection {
     public static final int PORT = 80;
 
     private final Socket socket;
-    private final BufferedReader reader;
+//    private final BufferedReader reader;
     private final BufferedWriter writer;
 
     private final ServerClientMediator mediator;
 
     public ClientConnection(String hostname, ServerClientMediator mediator) throws IOException {
         this.socket = new Socket(hostname, PORT);
-        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
         this.mediator = mediator;
@@ -33,28 +34,34 @@ public class ClientConnection {
     }
 
     public Response readResponse(){
+        int read;
+        byte[] buffer = new byte[4096];
+//        int matched = 0;
+//        char[] text = "\r\n\r\n".toCharArray();
+//        int[] error = new int[]{0, 0, 1, 2};
         StringBuilder stringBuilder = new StringBuilder();
-        String line;
-        int contentLength = 0;
 
-        try{
-            while(!(line = reader.readLine()).equals("")){
-                stringBuilder.append(line).append("\r\n");
-                if (line.toLowerCase().startsWith("content-length")){
-                    contentLength = Integer.parseInt(line.split(" ")[1]);
-                }
+        try {
+            while ((read = socket.getInputStream().read(buffer)) != -1){
+                stringBuilder.append(new String(Arrays.copyOfRange(buffer, 0, read)));
+//                for(int i = 0; i < read; i++){
+//                    if (buffer[i] == text[matched]){
+//                        matched++;
+//                        if(matched == text.length){
+//                            System.out.println("---------------- FOUND ------------");
+//                            matched = 0;
+//                            stringBuilder.append(new String(Arrays.copyOfRange(buffer, 0, i)));
+//                        }
+//                    } else {
+//                        matched = (matched > 0) ? error[matched-1] : 0;
+//                    }
+//                    stringBuilder.append(new String(buffer));
+//                }
             }
-            stringBuilder.append("\r\n");
-
-            if (contentLength > 0) {
-                char[] buffer = new char[contentLength];
-                reader.read(buffer);
-                stringBuilder.append(buffer);
-            }
-
         } catch (IOException e){
             e.printStackTrace();
         }
+        System.out.println("-----------------------read ------------------------------\n"+stringBuilder.toString());
 
         return new Response(stringBuilder.toString());
     }
