@@ -52,7 +52,6 @@ public class ServerConnection {
      * storing into the method writeResponse.
      * @param response this parameter is using for storing the response message.
      */
-
     public void receiveMessage(Response response){
         try {
             writeResponse(response);
@@ -67,7 +66,6 @@ public class ServerConnection {
      * @return It returns the request into the stringRequest and then passing into the class Request.
      * @throws IOException It is handling the input output  exception.
      */
-
     public Request readRequest() throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         String line = reader.readLine();
@@ -98,10 +96,6 @@ public class ServerConnection {
         writer.flush();
     }
 
-    /**
-     * Default method fpr cleaning the garbage values.
-     * @throws Throwable will check and handle the errors. (If any)
-     */
     @Override
     protected void finalize() throws Throwable {
         super.finalize();

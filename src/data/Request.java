@@ -3,7 +3,6 @@ package data;
 /**
  * The Class Request is responsible for showing the new request data and passing inti the variable host.
  */
-
 public class Request {
     public final String data;
     public String host;
@@ -13,8 +12,6 @@ public class Request {
      * @param data this parameter is using for showing the data for the new request.
      * @throws IllegalArgumentException Handling the errors in case of illegal arguments.
      */
-
-
     public Request(String data) throws IllegalArgumentException{
         if (!data.contains("\r\n") && data.contains(" ")){
             throw new IllegalArgumentException("Invalid data: '" + data + "'");

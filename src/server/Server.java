@@ -51,10 +51,6 @@ public class Server {
         return instance;
     }
 
-    /**
-     * Default method fpr cleaning the garbage values.
-     * @throws Throwable will check and handle the errors. (If any)
-     */
     @Override
     protected void finalize() throws Throwable {
         super.finalize();

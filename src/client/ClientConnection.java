@@ -9,9 +9,7 @@ import java.net.Socket;
 /**
  * The Class ClientConnection is responsible for developing the connection to client through
  * methods receiveMessage, readResponse and writeRequest.
- *
  */
-
 public class ClientConnection {
     public static final int PORT = 80;
 
@@ -93,10 +91,6 @@ public class ClientConnection {
         writer.flush();
     }
 
-    /**
-     * The default method of java to remove the garbage
-     * @throws Throwable show the message if any inappropriate thing accrue.
-     */
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
