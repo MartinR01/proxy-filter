@@ -89,8 +89,15 @@ public class ServerConnection {
      * @throws IOException thrown by BufferedWriter
      */
     public void writeResponse(Response response) throws IOException {
-        writer.write(response.data);
-        writer.flush();
+        if(response != null){
+            writer.write(response.toString());
+            writer.flush();
+            socket.getOutputStream().write(response.getBody());
+        } else {
+            writer.write("\r\n");
+            writer.flush();
+        }
+//        writer.flush();
     }
 
     @Override

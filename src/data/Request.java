@@ -5,7 +5,7 @@ package data;
  */
 public class Request {
     public final String data;
-    public String host;
+    public final String host;
 
     /**
      * Constructs the object and parses the headers.

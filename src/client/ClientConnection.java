@@ -1,10 +1,12 @@
 package client;
 
+import common.KMP;
 import data.Request;
 import data.Response;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 
 /**
  * ClientConnection is responsible for developing the connection to client
@@ -14,7 +16,6 @@ public class ClientConnection {
     public static final int HTTP_PORT = 80;
 
     private final Socket socket;
-    private final BufferedReader reader;
     private final BufferedWriter writer;
 
     private final ServerClientMediator mediator;
@@ -27,7 +28,6 @@ public class ClientConnection {
      */
     public ClientConnection(String hostname, ServerClientMediator mediator) throws IOException {
         this.socket = new Socket(hostname, HTTP_PORT);
-        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
         this.mediator = mediator;
@@ -53,30 +53,53 @@ public class ClientConnection {
      * @return returns received response parsed as a Response object
      */
     public Response readResponse(){
+        byte[] buffer = new byte[4096];
+
         StringBuilder stringBuilder = new StringBuilder();
-        String line;
-        int contentLength = 0;
+        int endIndex = -1;
 
-        try{
-            while(!(line = reader.readLine()).equals("")){
-                stringBuilder.append(line).append("\r\n");
-                if (line.startsWith("Content-Length")){
-                    contentLength = Integer.parseInt(line.split(" ")[1]);
+        Response response = null;
+
+        int total = 0;
+        byte[] contentField = null;
+
+        KMP kmp = new KMP("\r\n\r\n");
+        try {
+            int read;
+            while ((read = socket.getInputStream().read(buffer)) != -1){
+                if (endIndex == -1){
+                    endIndex = kmp.search(buffer, read);
+                    if (endIndex == -1){
+                        stringBuilder.append(new String(Arrays.copyOfRange(buffer, 0, read)));
+                    } else {
+                        stringBuilder.append(new String((Arrays.copyOfRange(buffer, 0, endIndex - 1))));
+
+                        response = new Response(stringBuilder.toString());
+                        int contentSize = response.getContentSize();
+
+                        contentField = new byte[contentSize];
+
+                        for (int i = endIndex + 1, j = 0; i < read; i++, j++){
+                            contentField[j] = buffer[i];
+                            total++;
+                        }
+                    }
+                } else {
+                    for(int i = 0, j = total; i < read; i++, j++){
+                        contentField[j] = buffer[i];
+                        total++;
+                    }
                 }
-            }
-            stringBuilder.append("\r\n");
 
-            if (contentLength > 0) {
-                char[] buffer = new char[contentLength];
-                reader.read(buffer);
-                stringBuilder.append(buffer);
             }
-
         } catch (IOException e){
             e.printStackTrace();
         }
 
-        return new Response(stringBuilder.toString());
+        if(response != null){
+            response.setBody(contentField);
+        }
+        return response;
     }
 
     /**
@@ -94,5 +117,4 @@ public class ClientConnection {
         super.finalize();
         socket.close();
     }
-
 }

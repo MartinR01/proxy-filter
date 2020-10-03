@@ -5,6 +5,7 @@ import data.Response;
 import server.ServerConnection;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -19,9 +20,16 @@ public class ServerClientMediator {
      * Constructs the ServerClientMediator object
      * @param serverConnection individual connection with client
      */
+    private ArrayList<Filter> filters;
+
     public ServerClientMediator(ServerConnection serverConnection){
         this.clientConnections = new HashMap<>();
         this.serverConnection = serverConnection;
+
+        filters = new ArrayList<>();
+        filters.add(new Filter("Smiley", "Trolly"));
+        filters.add(new Filter("Stockholm", "Linköping"));
+        filters.add(new Filter("smiley.jpg", "trolly.jpg"));
     }
 
     /**
@@ -38,7 +46,7 @@ public class ServerClientMediator {
      * @param response response received typically by the client-side
      */
     public void messageServer(Response response){
-        // TODO preprocessing
+        filters.forEach(f -> f.filter(response));
         serverConnection.receiveMessage(response);
     }
 
