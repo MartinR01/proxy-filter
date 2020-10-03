@@ -8,8 +8,7 @@ import java.io.*;
 import java.net.Socket;
 
 /**
- * The class ServerConnection is responsible for developing the connection to the server through
- * methods receiveMessage, readRequest and writeResponse.
+ * The class ServerConnection is socket wrapper for serving clients
  */
 public class ServerConnection {
     private final Socket socket;
@@ -19,9 +18,9 @@ public class ServerConnection {
     private final ServerClientMediator mediator;
 
     /**
-     * The method ServerConnection is responsible for getting the data from ServerClientMediator class.
-     * @param socket this parameter is using for get input and output stream.
-     * @throws IOException Exceptions handled in case of bad input or output.
+     * Constructs new instance on a socket created by incoming connection to the Server
+     * @param socket socket object, typically created by incoming connection to the Server
+     * @throws IOException in case IO streams of the socket cannot be opened
      */
     public ServerConnection(Socket socket) throws IOException{
         this.socket = socket;
@@ -32,8 +31,7 @@ public class ServerConnection {
     }
 
     /**
-     * The method run is responsible for storing the value from readRequest method and assigning that
-     * request value to mediator.
+     * Reads an incoming request and sends it to the mediator
      */
     public void run(){
         try {
@@ -48,9 +46,8 @@ public class ServerConnection {
     }
 
     /**
-     * The method is responsible for receiving the response message and then
-     * storing into the method writeResponse.
-     * @param response this parameter is using for storing the response message.
+     * Writes received response to socket's output, then starts reading another request
+     * @param response received response object
      */
     public void receiveMessage(Response response){
         try {
@@ -62,9 +59,9 @@ public class ServerConnection {
     }
 
     /**
-     * The method readRequest is responsible for reading reading then storing into new variable.
-     * @return It returns the request into the stringRequest and then passing into the class Request.
-     * @throws IOException It is handling the input output  exception.
+     * Reads incoming request and encapsulates it into a Request object
+     * @return parsed request
+     * @throws IOException see {@link Request}
      */
     public Request readRequest() throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
@@ -87,9 +84,9 @@ public class ServerConnection {
     }
 
     /**
-     *The method writeResponse is writing the response into the write variable.
-     * @param response this paramater is using for passing the response data into the writer variable
-     * @throws IOException Input Output Exceptions are handled.
+     * Writes a Response object into socket's output stream
+     * @param response HTTP response represented by the Response object
+     * @throws IOException thrown by BufferedWriter
      */
     public void writeResponse(Response response) throws IOException {
         writer.write(response.data);

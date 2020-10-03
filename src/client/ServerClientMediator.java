@@ -8,16 +8,16 @@ import java.io.IOException;
 import java.util.HashMap;
 
 /**
- * The class ServerClientMediator is working as a mediator between client and server through
- * using the methods messageClient and messageServer.
+ * ServerClientMediator facilitates the communication between server side and client side.
+ * Also can create additional client sockets if the target connection is not yet established.
  */
 public class ServerClientMediator {
     private final HashMap<String, ClientConnection> clientConnections;
     private final ServerConnection serverConnection;
 
     /**
-     *
-     * @param serverConnection this parameter is representing the object of server connection
+     * Constructs the ServerClientMediator object
+     * @param serverConnection individual connection with client
      */
     public ServerClientMediator(ServerConnection serverConnection){
         this.clientConnections = new HashMap<>();
@@ -25,18 +25,17 @@ public class ServerClientMediator {
     }
 
     /**
-     * This method messageClient is responsible for receiving the message form client.
-     * And it's also handling the IOException in case of bad input.
-     * @param request this parameter is storing the request of client
-     * @throws IOException this handling the IOException in case of bad input.
+     * Sends message to client-side
+     * @param request request received typically by the server-side
+     * @throws IOException see getConnection
      */
     public void messageClient(Request request) throws IOException {
          getConnection(request.host).receiveMessage(request);
     }
 
     /**
-     * This method messageServer is responsible for receiving the response message of serverConnection
-     * @param response this parameter is storing the response message into serverConnection
+     * Sends message to server-side
+     * @param response response received typically by the client-side
      */
     public void messageServer(Response response){
         // TODO preprocessing
@@ -44,11 +43,11 @@ public class ServerClientMediator {
     }
 
     /**
-     * This method getConnection is connected to the class ClientConnection and
-     * it's checking if the client connection contains the hostname or not.
-     * @param hostname this parameter containing the String input of the host.
-     * @return it's returning the host name for client connection.
-     * @throws IOException handling the IOException in case of bad input or output
+     * Gets connection object to the passed host.
+     * Creates the connection if none has yet been established.
+     * @param hostname url or IP address of host to connect to
+     * @return connection object representing passed hostname
+     * @throws IOException may be thrown in case Socket object cannot be created for the host
      */
     private ClientConnection getConnection(String hostname) throws IOException {
         if(!clientConnections.containsKey(hostname)){

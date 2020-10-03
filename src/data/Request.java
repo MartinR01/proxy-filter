@@ -1,16 +1,17 @@
 package data;
 
 /**
- * The Class Request is responsible for showing the new request data and passing inti the variable host.
+ * Request object represents one parsed HTTP request
  */
 public class Request {
     public final String data;
     public String host;
 
     /**
-     * The constructor Request is responsible for checking the data request and showing the new request of data.
-     * @param data this parameter is using for showing the data for the new request.
-     * @throws IllegalArgumentException Handling the errors in case of illegal arguments.
+     * Constructs the object and parses the headers.
+     * @param data Received HTTP request
+     * @throws IllegalArgumentException may be thrown in case the request does not contain
+     *      at least one newline character and a space.
      */
     public Request(String data) throws IllegalArgumentException{
         if (!data.contains("\r\n") && data.contains(" ")){

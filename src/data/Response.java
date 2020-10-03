@@ -1,14 +1,14 @@
 package data;
 
 /**
- * The class Response is responsible for showing the new response and storing into the variable this.data;
+ * Response object represents one parsed HTTP response
  */
 public class Response {
     public final String data;
 
     /**
-     * The constructor Response is responsible for showing the new response of data.
-     * @param data this parameter is using for storing and showing the data.
+     * Constructs the object and parses the headers.
+     * @param data Received HTTP response
      */
     public Response(String data){
         System.out.println("---- New Response ----\n'"+data+"'");

@@ -5,22 +5,22 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 
 /**
- * The class Server is responsible for accepting the connection from server.
+ * Server is responsible for accepting the connection from clients.
  */
 public class Server {
-    public static final int PORT = 8080;
+    /** Port number where the proxy runs */
+    public static final int SERVER_PORT = 8080;
     private static Server instance = null;
 
     private ServerSocket socket;
     private ArrayList<ServerConnection> connections;
 
     /**
-     * constructor Server is storing the ServerSocket PORT into the socket variable.
-     * Input Output Exceptions are handled.
+     * Constructs serverSocket on the SERVER_PORT
      */
     private Server(){
         try {
-            socket = new ServerSocket(PORT);
+            socket = new ServerSocket(SERVER_PORT);
             connections = new ArrayList<>();
         } catch (IOException e) {
             e.printStackTrace();
@@ -28,7 +28,7 @@ public class Server {
     }
 
     /**
-     * The method acceptConnection is responsible for establishing the server connection.
+     * Accepts incoming connections and stores them.
      */
     public void acceptConnection(){
         try {
@@ -41,8 +41,8 @@ public class Server {
     }
 
     /**
-     * The method getInstance is responsible for checking the instance and assigning it to the server.
-     * @return its returning the static variable instance.
+     * Server class is a singleton.
+     * @return instance of the singleton
      */
     public static Server getInstance(){
         if (instance == null){

@@ -7,11 +7,11 @@ import java.io.*;
 import java.net.Socket;
 
 /**
- * The Class ClientConnection is responsible for developing the connection to client through
- * methods receiveMessage, readResponse and writeRequest.
+ * ClientConnection is responsible for developing the connection to client
  */
 public class ClientConnection {
-    public static final int PORT = 80;
+    /** standard HTTP port to open connection on */
+    public static final int HTTP_PORT = 80;
 
     private final Socket socket;
     private final BufferedReader reader;
@@ -20,14 +20,13 @@ public class ClientConnection {
     private final ServerClientMediator mediator;
 
     /**
-     *
-     * @param hostname it's passing the port number, which is actually 80 in our case (for HTTP response)
-     * @param mediator this parameter is working as a mediator and it's responsible for getting the
-     *                 bit codes of text or image and converting them into the desired text or image.
-     * @throws IOException we handled the situation if there is any wrong at the time of Input or Output.
+     * Constructs the ClientConnection object
+     * @param hostname url or IP address of host to connect to
+     * @param mediator mediator object for communication with the server side
+     * @throws IOException construction of Socket object may throw this exception
      */
     public ClientConnection(String hostname, ServerClientMediator mediator) throws IOException {
-        this.socket = new Socket(hostname, PORT);
+        this.socket = new Socket(hostname, HTTP_PORT);
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
@@ -51,9 +50,8 @@ public class ClientConnection {
     /**
      * The method readResponse is responsible for taking and reading the response from user.
      * IOExceptions are handled as well.
-     * @return this method is returning the response buffer in terms of bits.
+     * @return returns received response parsed as a Response object
      */
-
     public Response readResponse(){
         StringBuilder stringBuilder = new StringBuilder();
         String line;
@@ -82,9 +80,9 @@ public class ClientConnection {
     }
 
     /**
-     * The method writeRequest is responsible for writing the request in the Request.java class
-     * @param request this parameter is storing the request data from user and passing into the Request class.
-     * @throws IOException here IOException is handled in case of wrong input while writing the request.
+     * Writes a Request object into socket's output stream
+     * @param request HTTP request represented by the Request object
+     * @throws IOException thrown by BufferedWriter
      */
     public void writeRequest(Request request) throws IOException {
         writer.write(request.data);
