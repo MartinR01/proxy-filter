@@ -9,12 +9,7 @@ public class Response {
     private HashMap<String, String> headers;
     private byte[] body;
 
-    public Response(String data){
-        System.out.println("---- New Response ----\n'"+data+"'");
-        this.data = data;
-    }
-
-    public Response(String headers, boolean a){
+    public Response(String headers){
         System.out.println("---- New Response ----\n'"+headers+"'");
         String[] all = headers.split("\r\n");
 
@@ -24,7 +19,6 @@ public class Response {
         for (int i = 1; i < all.length; i++){
             if (all[i].contains(": ")){
                 String[] keyValue = all[i].split(": ");
-                System.out.println("adding: "+keyValue[0] + " : "+keyValue[1]);
                 this.headers.put(keyValue[0], keyValue[1]);
             }
         }
@@ -41,6 +35,10 @@ public class Response {
     public String getHeaderValue(String name){
         // TODO needs case insensitive matching, because HTTP allows for different types
         return headers.get(name);
+    }
+
+    public int getContentSize(){
+        return Integer.parseInt(getHeaderValue("Content-Length"));
     }
 
     public void setBody(byte[] body){
@@ -65,7 +63,8 @@ public class Response {
             stringBuilder.append(key + ": "+ headers.get(key) + "\r\n");
         }
         stringBuilder.append("\r\n");
-//        stringBuilder.append(body);
+        // TODO make writable
+//        stringBuilder.append(Arrays.toString(body));
 
         return stringBuilder.toString();
     }
