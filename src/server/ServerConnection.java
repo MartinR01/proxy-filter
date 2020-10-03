@@ -7,6 +7,9 @@ import data.Response;
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * The class ServerConnection is socket wrapper for serving clients
+ */
 public class ServerConnection {
     private final Socket socket;
     private final BufferedReader reader;
@@ -14,6 +17,11 @@ public class ServerConnection {
 
     private final ServerClientMediator mediator;
 
+    /**
+     * Constructs new instance on a socket created by incoming connection to the Server
+     * @param socket socket object, typically created by incoming connection to the Server
+     * @throws IOException in case IO streams of the socket cannot be opened
+     */
     public ServerConnection(Socket socket) throws IOException{
         this.socket = socket;
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -22,6 +30,9 @@ public class ServerConnection {
         this.mediator = new ServerClientMediator(this);
     }
 
+    /**
+     * Reads an incoming request and sends it to the mediator
+     */
     public void run(){
         try {
             Request request = readRequest();
@@ -34,6 +45,10 @@ public class ServerConnection {
         }
     }
 
+    /**
+     * Writes received response to socket's output, then starts reading another request
+     * @param response received response object
+     */
     public void receiveMessage(Response response){
         try {
             writeResponse(response);
@@ -43,6 +58,11 @@ public class ServerConnection {
         run();
     }
 
+    /**
+     * Reads incoming request and encapsulates it into a Request object
+     * @return parsed request
+     * @throws IOException see {@link Request}
+     */
     public Request readRequest() throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         String line = reader.readLine();
@@ -63,6 +83,11 @@ public class ServerConnection {
         return new Request(stringBuilder.toString());
     }
 
+    /**
+     * Writes a Response object into socket's output stream
+     * @param response HTTP response represented by the Response object
+     * @throws IOException thrown by BufferedWriter
+     */
     public void writeResponse(Response response) throws IOException {
         writer.write(response.data);
         writer.flush();

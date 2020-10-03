@@ -6,8 +6,12 @@ import data.Response;
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * ClientConnection is responsible for developing the connection to client
+ */
 public class ClientConnection {
-    public static final int PORT = 80;
+    /** standard HTTP port to open connection on */
+    public static final int HTTP_PORT = 80;
 
     private final Socket socket;
     private final BufferedReader reader;
@@ -15,14 +19,25 @@ public class ClientConnection {
 
     private final ServerClientMediator mediator;
 
+    /**
+     * Constructs the ClientConnection object
+     * @param hostname url or IP address of host to connect to
+     * @param mediator mediator object for communication with the server side
+     * @throws IOException construction of Socket object may throw this exception
+     */
     public ClientConnection(String hostname, ServerClientMediator mediator) throws IOException {
-        this.socket = new Socket(hostname, PORT);
+        this.socket = new Socket(hostname, HTTP_PORT);
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
         this.mediator = mediator;
     }
 
+    /**
+     * The method receiveMessage is receiving the request from the client and reading the
+     * response from the server as well. Moreover, it's handling the IOException.
+     * @param request this parameter is responsible for getting the request from client of the proxy.
+     */
     public void receiveMessage(Request request){
         try {
             writeRequest(request);
@@ -32,6 +47,11 @@ public class ClientConnection {
         }
     }
 
+    /**
+     * The method readResponse is responsible for taking and reading the response from user.
+     * IOExceptions are handled as well.
+     * @return returns received response parsed as a Response object
+     */
     public Response readResponse(){
         StringBuilder stringBuilder = new StringBuilder();
         String line;
@@ -59,6 +79,11 @@ public class ClientConnection {
         return new Response(stringBuilder.toString());
     }
 
+    /**
+     * Writes a Request object into socket's output stream
+     * @param request HTTP request represented by the Request object
+     * @throws IOException thrown by BufferedWriter
+     */
     public void writeRequest(Request request) throws IOException {
         writer.write(request.data);
         writer.flush();
@@ -69,4 +94,5 @@ public class ClientConnection {
         super.finalize();
         socket.close();
     }
+
 }
