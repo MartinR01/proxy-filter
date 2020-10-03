@@ -12,6 +12,9 @@ public class Filter {
     }
 
     public void filter(Response response){
-        response.setData(response.getData().replaceAll(replace, with));
+        if (response.getHeaderValue("Content-Type").contains("text")){
+            response.setBody(new String(response.getBody()).replaceAll(replace, with).getBytes());
+        }
+//        response.setData(response.getData().replaceAll(replace, with));
     }
 }

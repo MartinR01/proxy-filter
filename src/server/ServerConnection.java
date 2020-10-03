@@ -64,8 +64,15 @@ public class ServerConnection {
     }
 
     public void writeResponse(Response response) throws IOException {
-        writer.write(response.getData());
-        writer.flush();
+        if(response != null){
+            writer.write(response.toString());
+            writer.flush();
+            socket.getOutputStream().write(response.getBody());
+        } else {
+            writer.write("\r\n");
+            writer.flush();
+        }
+//        writer.flush();
     }
 
     @Override
