@@ -62,7 +62,8 @@ public class ClientConnection {
         KMP kmp = new KMP("\r\n\r\n");
         try {
             int read;
-            while ((read = socket.getInputStream().read(buffer)) != -1){
+            do{
+                read = socket.getInputStream().read(buffer);
                 if (endIndex == -1){
                     endIndex = kmp.search(buffer, read);
                     if (endIndex == -1){
@@ -86,11 +87,8 @@ public class ClientConnection {
                         total++;
                     }
                 }
-                if(read != buffer.length){
-                    break;
-                }
 
-            }
+            } while(read == buffer.length);
         } catch (IOException e){
             e.printStackTrace();
         }
