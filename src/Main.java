@@ -27,7 +27,7 @@ public class Main{
                     "Pragma: no-cache\r\n" +
                     "Cache-Control: no-cache\r\n\r\n"));
 //            c = new ClientConnection("zebroid.ida.liu.se", null);
-            c.connect();
+//            c.connect();
             c.receiveMessage(new Request("GET http://zebroid.ida.liu.se/fakenews/test1.txt HTTP/1.1\r\n" +
                     "Host: zebroid.ida.liu.se\r\n" +
                     "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0\r\n" +
@@ -40,7 +40,7 @@ public class Main{
                     "Pragma: no-cache\r\n" +
                     "Cache-Control: no-cache\r\n\r\n"));
 //            c = new ClientConnection("zebroid.ida.liu.se", null);
-            c.connect();
+//            c.connect();
             c.receiveMessage(new Request("GET http://zebroid.ida.liu.se/favicon.ico HTTP/1.1\r\n" +
                     "Host: zebroid.ida.liu.se\r\n" +
                     "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0\r\n" +
