@@ -92,9 +92,12 @@ public class ServerConnection {
         if(response != null){
             writer.write(response.toString());
             writer.flush();
-            socket.getOutputStream().write(response.getBody());
+            if (response.getBody() != null){
+                socket.getOutputStream().write(response.getBody());
+            }
         } else {
-            writer.write("\r\n");
+            // TODO what about removing this branch?
+            writer.write(-1);
             writer.flush();
         }
 //        writer.flush();
