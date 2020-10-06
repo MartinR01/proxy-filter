@@ -14,7 +14,7 @@ public class Response {
 
     /**
      * Constructs the object and parses the headers.
-     * @param data Received HTTP response
+     * @param headers Received HTTP response
      */
     public Response(String headers){
         System.out.println("---- New Response ----\n'"+headers+"'");
@@ -70,8 +70,6 @@ public class Response {
             stringBuilder.append(key + ": "+ headers.get(key) + "\r\n");
         }
         stringBuilder.append("\r\n");
-        // TODO make writable
-//        stringBuilder.append(Arrays.toString(body));
 
         return stringBuilder.toString();
     }
