@@ -16,7 +16,7 @@ public class ClientConnection {
     public static final int HTTP_PORT = 80;
 
     private final Socket socket;
-    private final BufferedWriter writer;
+    private final PrintWriter printWriter;
 
     private final ServerClientMediator mediator;
 
@@ -28,8 +28,7 @@ public class ClientConnection {
      */
     public ClientConnection(String hostname, ServerClientMediator mediator) throws IOException {
         this.socket = new Socket(hostname, HTTP_PORT);
-        this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-
+        this.printWriter = new PrintWriter(socket.getOutputStream());
         this.mediator = mediator;
     }
 
@@ -39,12 +38,8 @@ public class ClientConnection {
      * @param request this parameter is responsible for getting the request from client of the proxy.
      */
     public void receiveMessage(Request request){
-        try {
-            writeRequest(request);
-            mediator.messageServer(readResponse());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        writeRequest(request);
+        mediator.messageServer(readResponse());
     }
 
     /**
@@ -53,6 +48,7 @@ public class ClientConnection {
      * @return returns received response parsed as a Response object
      */
     public Response readResponse(){
+        System.out.println("read response called");
         byte[] buffer = new byte[4096];
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -66,7 +62,10 @@ public class ClientConnection {
         KMP kmp = new KMP("\r\n\r\n");
         try {
             int read;
-            while ((read = socket.getInputStream().read(buffer)) != -1){
+            int contentSize = -1;
+
+            do{
+                read = socket.getInputStream().read(buffer);
                 if (endIndex == -1){
                     endIndex = kmp.search(buffer, read);
                     if (endIndex == -1){
@@ -75,7 +74,7 @@ public class ClientConnection {
                         stringBuilder.append(new String((Arrays.copyOfRange(buffer, 0, endIndex - 1))));
 
                         response = new Response(stringBuilder.toString());
-                        int contentSize = response.getContentSize();
+                        contentSize = response.getContentSize();
 
                         contentField = new byte[contentSize];
 
@@ -90,12 +89,11 @@ public class ClientConnection {
                         total++;
                     }
                 }
-
-            }
+            // if content size specified, make sure to read the whole payload, otherwise read while buffer is full
+            } while((contentSize != -1) ? (total != contentSize) : (read == buffer.length));
         } catch (IOException e){
             e.printStackTrace();
         }
-
         if(response != null){
             response.setBody(contentField);
         }
@@ -105,11 +103,10 @@ public class ClientConnection {
     /**
      * Writes a Request object into socket's output stream
      * @param request HTTP request represented by the Request object
-     * @throws IOException thrown by BufferedWriter
      */
-    public void writeRequest(Request request) throws IOException {
-        writer.write(request.data);
-        writer.flush();
+    public void writeRequest(Request request) {
+        printWriter.write(request.data);
+        printWriter.flush();
     }
 
     @Override

@@ -92,12 +92,11 @@ public class ServerConnection {
         if(response != null){
             writer.write(response.toString());
             writer.flush();
-            socket.getOutputStream().write(response.getBody());
-        } else {
-            writer.write("\r\n");
-            writer.flush();
+            if (response.getBody() != null){
+                socket.getOutputStream().write(response.getBody());
+                socket.getOutputStream().flush();
+            }
         }
-//        writer.flush();
     }
 
     @Override
