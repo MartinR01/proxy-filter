@@ -94,6 +94,7 @@ public class ServerConnection {
             writer.flush();
             if (response.getBody() != null){
                 socket.getOutputStream().write(response.getBody());
+                socket.getOutputStream().flush();
             }
         }
     }
