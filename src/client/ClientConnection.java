@@ -48,7 +48,6 @@ public class ClientConnection {
      * @return returns received response parsed as a Response object
      */
     public Response readResponse(){
-        System.out.println("read response called");
         byte[] buffer = new byte[4096];
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -75,6 +74,10 @@ public class ClientConnection {
 
                         response = new Response(stringBuilder.toString());
                         contentSize = response.getContentSize();
+
+                        if(contentSize == -1){
+                            break;
+                        }
 
                         contentField = new byte[contentSize];
 
