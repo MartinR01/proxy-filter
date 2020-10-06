@@ -95,12 +95,7 @@ public class ServerConnection {
             if (response.getBody() != null){
                 socket.getOutputStream().write(response.getBody());
             }
-        } else {
-            // TODO what about removing this branch?
-            writer.write(-1);
-            writer.flush();
         }
-//        writer.flush();
     }
 
     @Override
