@@ -13,9 +13,6 @@ import java.util.Arrays;
  * ClientConnection is responsible for developing the connection to client
  */
 public class ClientConnection {
-    /** standard HTTP port to open connection on */
-    public static final int HTTP_PORT = 80;
-
     private final Socket socket;
     private final PrintWriter printWriter;
 

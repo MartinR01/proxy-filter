@@ -6,6 +6,8 @@ import com.ClientConnection;
  * Request object represents one parsed HTTP request
  */
 public class RequestMessage extends AMessage{
+    /** standard HTTP port to open connection on */
+    public static final int HTTP_PORT = 80;
 
     /**
      * Constructs the object and parses the headers.
@@ -37,7 +39,7 @@ public class RequestMessage extends AMessage{
 
         public Host(String hostname){
             this.hostname = hostname;
-            this.port = ClientConnection.HTTP_PORT;
+            this.port = HTTP_PORT;
         }
     }
 }
