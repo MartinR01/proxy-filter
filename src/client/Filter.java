@@ -21,9 +21,9 @@ public class Filter {
         if (response == null){
             return;
         }
-        if (response.getStatus().contains("200 OK") && response.getHeaderValue("content-type").contains("text")){
+        if (response.getStatus().contains("200 OK") && response.getContentType().contains("text")){
             String body = new String(response.getBody());
-            if(onlyText && response.getHeaderValue("content-type").contains("text/html")) {
+            if(onlyText && response.getContentType().contains("text/html")) {
                 Matcher matcher = HTMLPattern.matcher(body);
                 StringBuffer stringBuffer = new StringBuffer();
                 while (matcher.find()) {

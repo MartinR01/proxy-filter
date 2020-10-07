@@ -29,9 +29,12 @@ public class Response {
         }
     }
 
-    public String getHeaderValue(String name){
-        // TODO needs case insensitive matching, because HTTP allows for different types
+    private String getHeaderValue(String name){
         return headers.get(name);
+    }
+
+    public String getContentType(){
+        return getHeaderValue("content-type");
     }
 
     public int getContentSize(){
