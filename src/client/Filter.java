@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Filter {
-    public static final Pattern HTMLPattern = Pattern.compile("<(\\w+)>([\\w\\W][^<>]+?)</\\1>");
+    public static final Pattern HTMLPattern = Pattern.compile(">([\\w\\W]+?)<");
     public final String replace;
     public final String with;
     public final boolean onlyText;
@@ -23,13 +23,13 @@ public class Filter {
         }
         if (response.getStatus().contains("200 OK") && response.getHeaderValue("Content-Type").contains("text")){
             String body = new String(response.getBody());
-            if(onlyText) {
+            if(onlyText && response.getHeaderValue("Content-Type").contains("text/html")) {
                 Matcher matcher = HTMLPattern.matcher(body);
                 StringBuffer stringBuffer = new StringBuffer();
                 while (matcher.find()) {
-                    matcher.appendReplacement(stringBuffer, body.substring(matcher.start(), matcher.start(2))
-                            + matcher.group(2).replaceAll(replace, with)
-                            + body.substring(matcher.end(2), matcher.end()));
+                    matcher.appendReplacement(stringBuffer, body.substring(matcher.start(), matcher.start(1))
+                            + matcher.group(1).replaceAll(replace, with)
+                            + body.substring(matcher.end(1), matcher.end()));
                 }
                 matcher.appendTail(stringBuffer);
                 response.setBody(stringBuffer.toString().getBytes());
