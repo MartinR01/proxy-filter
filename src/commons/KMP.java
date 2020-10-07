@@ -1,4 +1,4 @@
-package common;
+package commons;
 
 /**
  * objects of the KMP class represent one individual

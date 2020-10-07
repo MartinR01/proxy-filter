@@ -1,8 +1,7 @@
-package client;
+package com;
 
-import data.Request;
-import data.Response;
-import server.ServerConnection;
+import messages.Message;
+import messages.RequestMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.HashMap;
  * Also can create additional client sockets if the target connection is not yet established.
  */
 public class ServerClientMediator {
-    private final HashMap<Request.Host, ClientConnection> clientConnections;
+    private final HashMap<RequestMessage.Host, ClientConnection> clientConnections;
     private final ServerConnection serverConnection;
 
     /**
@@ -34,35 +33,35 @@ public class ServerClientMediator {
 
     /**
      * Sends message to client-side
-     * @param request request received typically by the server-side
+     * @param message request received typically by the server-side
      * @throws IOException see getConnection
      */
-    public void messageClient(Request request) throws IOException {
-         getConnection(request.getHost()).receiveMessage(request);
+    public void messageClient(Message message) throws IOException {
+         getConnection(new RequestMessage(message).getHost()).receiveMessage(message);
     }
 
     /**
      * Sends message to server-side
-     * @param response response received typically by the client-side
+     * @param message response received typically by the client-side
      */
-    public void messageServer(Response response){
-        filters.forEach(f -> f.filter(response));
-        serverConnection.receiveMessage(response);
+    public void messageServer(Message message){
+        filters.forEach(f -> f.filter(message));
+        serverConnection.receiveMessage(message);
     }
 
     /**
      * Gets connection object to the passed host.
      * Creates the connection if none has yet been established.
-     * @param hostname url or IP address of host to connect to
+     * @param host url or IP address of host to connect to
      * @return connection object representing passed hostname
      * @throws IOException may be thrown in case Socket object cannot be created for the host
      */
-    private ClientConnection getConnection(Request.Host hostname) throws IOException {
-        if(!clientConnections.containsKey(hostname)){
-            ClientConnection con = new ClientConnection(hostname, this);
-            clientConnections.put(hostname, con);
+    private ClientConnection getConnection(RequestMessage.Host host) throws IOException {
+        if(!clientConnections.containsKey(host)){
+            ClientConnection con = new ClientConnection(host, this);
+            clientConnections.put(host, con);
             return con;
         }
-        return clientConnections.get(hostname);
+        return clientConnections.get(host);
     }
 }
