@@ -22,10 +22,24 @@ public class KMP {
      * Pre-calculates needed internal variables of the KMP algorithm
      * @param sequence text sequence this instance will be used to search for
      */
+    public KMP(char[] sequence){
+        this.sequence = sequence;
+        this.error = new int[sequence.length];
+
+        int j = 0;
+        for (int i = 1; i < sequence.length; i++){
+            while(j > 0 && sequence[j] != sequence[i]){
+                j = error[j-1];
+            }
+            if (sequence[j] == sequence[i]){
+                j++;
+            }
+            error[i] = j;
+        }
+    }
+
     public KMP(String sequence){
-        // TODO implement
-        this.sequence = "\r\n\r\n".toCharArray();
-        this.error = new int[]{0, 0, 1, 2};
+        this(sequence.toCharArray());
     }
 
     /**
