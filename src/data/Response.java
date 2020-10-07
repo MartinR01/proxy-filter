@@ -24,7 +24,7 @@ public class Response {
         for (int i = 1; i < all.length; i++){
             if (all[i].contains(": ")){
                 String[] keyValue = all[i].split(": ");
-                this.headers.put(keyValue[0], keyValue[1]);
+                this.headers.put(keyValue[0].toLowerCase(), keyValue[1]);
             }
         }
     }
@@ -35,7 +35,7 @@ public class Response {
     }
 
     public int getContentSize(){
-        String contentSizeString = getHeaderValue("Content-Length");
+        String contentSizeString = getHeaderValue("content-length");
         if (contentSizeString == null){
             return -1;
         }
