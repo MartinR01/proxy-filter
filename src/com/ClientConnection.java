@@ -9,8 +9,9 @@ import java.net.Socket;
 /**
  * Socket wrapper for connecting to remote servers
  */
-public class ClientConnection extends AConnection implements IMessageable{
+public class ClientConnection implements IMessageable{
     private final ServerClientMediator mediator;
+    private final Connection connection;
 
     /**
      * Constructs the ClientConnection object
@@ -19,7 +20,7 @@ public class ClientConnection extends AConnection implements IMessageable{
      * @throws IOException construction of Socket object may throw this exception
      */
     public ClientConnection(RequestMessage.Host hostname, ServerClientMediator mediator) throws IOException {
-        super(new Socket(hostname.hostname, hostname.port));
+        this.connection = new Connection(new Socket(hostname.hostname, hostname.port));
         this.mediator = mediator;
     }
 
@@ -29,7 +30,7 @@ public class ClientConnection extends AConnection implements IMessageable{
      * @param message this parameter is responsible for getting the request from client of the proxy.
      */
     public void receiveMessage(Message message){
-        writeMessage(message);
-        mediator.messageServer(readMessage());
+        connection.writeMessage(message);
+        mediator.messageServer(connection.readMessage());
     }
 }

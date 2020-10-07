@@ -8,8 +8,9 @@ import java.net.Socket;
 /**
  * Socket wrapper for serving clients
  */
-public class ServerConnection extends AConnection implements IMessageable{
+public class ServerConnection implements IMessageable{
     private final ServerClientMediator mediator;
+    private final Connection connection;
 
     /**
      * Constructs new instance on a socket created by incoming connection to the Server
@@ -17,7 +18,7 @@ public class ServerConnection extends AConnection implements IMessageable{
      * @throws IOException in case IO streams of the socket cannot be opened
      */
     public ServerConnection(Socket socket) throws IOException{
-        super(socket);
+        this.connection = new Connection(socket);
         this.mediator = new ServerClientMediator(this);
     }
 
@@ -26,7 +27,7 @@ public class ServerConnection extends AConnection implements IMessageable{
      */
     public void run(){
         try {
-            Message request = readMessage();
+            Message request = connection.readMessage();
             if(request == null){
                 return;
             }
@@ -41,7 +42,7 @@ public class ServerConnection extends AConnection implements IMessageable{
      * @param response received response object
      */
     public void receiveMessage(Message response){
-        writeMessage(response);
+        connection.writeMessage(response);
         run();
     }
 

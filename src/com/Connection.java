@@ -11,7 +11,7 @@ import java.util.Arrays;
 /**
  * Handles socket connection - both HTTP-specific reading and writing.
  */
-public abstract class AConnection {
+public class Connection {
     private final Socket socket;
     private final PrintWriter printWriter;
 
@@ -20,7 +20,7 @@ public abstract class AConnection {
      * @param socket connected socket
      * @throws IOException thrown when there is an error constructing IO streams for the socket.
      */
-    public AConnection(Socket socket) throws IOException {
+    public Connection(Socket socket) throws IOException {
         this.socket = socket;
         this.printWriter = new PrintWriter(socket.getOutputStream());
     }
