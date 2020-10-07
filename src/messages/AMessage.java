@@ -2,7 +2,7 @@ package messages;
 
 import java.util.HashMap;
 
-public abstract class AMessage {
+public class AMessage {
     public static final String NEWLINE = "\r\n";
     public static final String HEADERS_END = NEWLINE + NEWLINE;
     public static final String HEADER_SEP = ": ";
