@@ -1,8 +1,6 @@
 package com;
 
 import messages.AMessage;
-import messages.RequestMessage;
-import messages.ResponseMessage;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -10,7 +8,7 @@ import java.net.Socket;
 /**
  * The class ServerConnection is socket wrapper for serving clients
  */
-public class ServerConnection extends AConnection{
+public class ServerConnection extends AConnection implements IMessageable{
     private final ServerClientMediator mediator;
 
     /**
@@ -32,7 +30,7 @@ public class ServerConnection extends AConnection{
             if(request == null){
                 return;
             }
-            mediator.messageClient(new RequestMessage(request));
+            mediator.messageClient(request);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,8 +40,8 @@ public class ServerConnection extends AConnection{
      * Writes received response to socket's output, then starts reading another request
      * @param response received response object
      */
-    public void receiveMessage(ResponseMessage response){
-        writeRequest(response.getMessage());
+    public void receiveMessage(AMessage response){
+        writeRequest(response);
         run();
     }
 

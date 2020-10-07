@@ -1,5 +1,6 @@
 package com;
 
+import messages.AMessage;
 import messages.ResponseMessage;
 
 import java.util.regex.Matcher;
@@ -17,10 +18,11 @@ public class Filter {
         this.onlyText = onlyText;
     }
 
-    public void filter(ResponseMessage response){
-        if (response == null){
+    public void filter(AMessage message){
+        if (message == null){
             return;
         }
+        ResponseMessage response = new ResponseMessage(message);
         if (response.getStatus().contains("200 OK") && response.getContentType().contains("text")){
             String body = new String(response.getBody());
             if(onlyText && response.getContentType().contains("text/html")) {

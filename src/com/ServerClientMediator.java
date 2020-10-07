@@ -1,5 +1,6 @@
 package com;
 
+import messages.AMessage;
 import messages.RequestMessage;
 import messages.ResponseMessage;
 
@@ -36,17 +37,17 @@ public class ServerClientMediator {
      * @param request request received typically by the server-side
      * @throws IOException see getConnection
      */
-    public void messageClient(RequestMessage request) throws IOException {
-         getConnection(request.getHost()).receiveMessage(request);
+    public void messageClient(AMessage request) throws IOException {
+         getConnection(new RequestMessage(request).getHost()).receiveMessage(request);
     }
 
     /**
      * Sends message to server-side
-     * @param response response received typically by the client-side
+     * @param message response received typically by the client-side
      */
-    public void messageServer(ResponseMessage response){
-        filters.forEach(f -> f.filter(response));
-        serverConnection.receiveMessage(response);
+    public void messageServer(AMessage message){
+        filters.forEach(f -> f.filter(message));
+        serverConnection.receiveMessage(message);
     }
 
     /**
