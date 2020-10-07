@@ -24,18 +24,21 @@ public class Response {
         for (int i = 1; i < all.length; i++){
             if (all[i].contains(": ")){
                 String[] keyValue = all[i].split(": ");
-                this.headers.put(keyValue[0], keyValue[1]);
+                this.headers.put(keyValue[0].toLowerCase(), keyValue[1]);
             }
         }
     }
 
-    public String getHeaderValue(String name){
-        // TODO needs case insensitive matching, because HTTP allows for different types
+    private String getHeaderValue(String name){
         return headers.get(name);
     }
 
+    public String getContentType(){
+        return getHeaderValue("content-type");
+    }
+
     public int getContentSize(){
-        String contentSizeString = getHeaderValue("Content-Length");
+        String contentSizeString = getHeaderValue("content-length");
         if (contentSizeString == null){
             return -1;
         }

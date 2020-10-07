@@ -28,19 +28,18 @@ public class Request {
         for (int i = 1; i < all.length; i++){
             if (all[i].contains(": ")){
                 String[] keyValue = all[i].split(": ");
-                this.headers.put(keyValue[0], keyValue[1]);
+                this.headers.put(keyValue[0].toLowerCase(), keyValue[1]);
             }
         }
     }
 
-    public String getHeaderValue(String name){
-        // TODO needs case insensitive matching, because HTTP allows for different types
+    private String getHeaderValue(String name){
         return headers.get(name);
     }
 
     // TODO make general interface for all headers - that allows to get the raw string value .... can be then used in the HashMap
     public Host getHost(){
-        String host = headers.get("Host");
+        String host = headers.get("host");
         if(host.contains(":")){
             String[] ar = host.split(":");
             return new Host(ar[0], Integer.parseInt(ar[1]));
@@ -58,7 +57,7 @@ public class Request {
     }
 
     public int getContentSize(){
-        String contentSizeString = getHeaderValue("Content-Length");
+        String contentSizeString = getHeaderValue("content-length");
         if (contentSizeString == null){
             return -1;
         }
