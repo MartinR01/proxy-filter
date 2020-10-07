@@ -6,8 +6,6 @@ import java.util.HashMap;
  * Response object represents one parsed HTTP response
  */
 public class Response {
-    private String data;
-
     private String status;
     private HashMap<String, String> headers;
     private byte[] body;
@@ -31,21 +29,17 @@ public class Response {
         }
     }
 
-    private String getData() {
-        return data;
-    }
-
-    private void setData(String data) {
-        this.data = data;
-    }
-
     public String getHeaderValue(String name){
         // TODO needs case insensitive matching, because HTTP allows for different types
         return headers.get(name);
     }
 
     public int getContentSize(){
-        return Integer.parseInt(getHeaderValue("Content-Length"));
+        String contentSizeString = getHeaderValue("Content-Length");
+        if (contentSizeString == null){
+            return -1;
+        }
+        return Integer.parseInt(contentSizeString);
     }
 
     public void setBody(byte[] body){

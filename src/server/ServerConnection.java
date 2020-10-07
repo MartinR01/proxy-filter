@@ -1,11 +1,13 @@
 package server;
 
 import client.ServerClientMediator;
+import common.KMP;
 import data.Request;
 import data.Response;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 
 /**
  * The class ServerConnection is socket wrapper for serving clients
@@ -64,23 +66,62 @@ public class ServerConnection {
      * @throws IOException see {@link Request}
      */
     public Request readRequest() throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
-        String line = reader.readLine();
+        byte[] buffer = new byte[4096];
 
-        try{
-            while(line != null && !line.equals("")){
-                stringBuilder.append(line).append("\r\n");
-                line = reader.readLine();
-            }
-            if(stringBuilder.length() == 0){
-                return null;
-            }
-            stringBuilder.append("\r\n");
+        StringBuilder stringBuilder = new StringBuilder();
+        int endIndex = -1;
+
+        Request request = null;
+
+        int total = 0;
+        byte[] contentField = null;
+
+        KMP kmp = new KMP("\r\n\r\n");
+        try {
+            int read;
+            int contentSize = -1;
+
+            do{
+                read = socket.getInputStream().read(buffer);
+                if (endIndex == -1){
+                    endIndex = kmp.search(buffer, read);
+                    if (endIndex == -1){
+                        if(read > 0) {
+                            System.out.println("Buffer: " + Arrays.toString(buffer));
+                            stringBuilder.append(new String(Arrays.copyOfRange(buffer, 0, read)));
+                        }
+                    } else {
+                        stringBuilder.append(new String((Arrays.copyOfRange(buffer, 0, endIndex - 1))));
+
+                        request = new Request(stringBuilder.toString());
+                        contentSize = request.getContentSize();
+
+                        if(contentSize == -1){
+                            break;
+                        }
+
+                        contentField = new byte[contentSize];
+
+                        for (int i = endIndex + 1, j = 0; i < read; i++, j++){
+                            contentField[j] = buffer[i];
+                            total++;
+                        }
+                    }
+                } else {
+                    for(int i = 0, j = total; i < read; i++, j++){
+                        contentField[j] = buffer[i];
+                        total++;
+                    }
+                }
+                // if content size specified, make sure to read the whole payload, otherwise read while buffer is full
+            } while((contentSize != -1) ? (total != contentSize) : (read == buffer.length));
         } catch (IOException e){
             e.printStackTrace();
         }
-
-        return new Request(stringBuilder.toString());
+        if(request != null){
+            request.setBody(contentField);
+        }
+        return request;
     }
 
     /**

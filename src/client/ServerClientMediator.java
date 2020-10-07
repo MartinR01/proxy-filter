@@ -13,7 +13,7 @@ import java.util.HashMap;
  * Also can create additional client sockets if the target connection is not yet established.
  */
 public class ServerClientMediator {
-    private final HashMap<String, ClientConnection> clientConnections;
+    private final HashMap<Request.Host, ClientConnection> clientConnections;
     private final ServerConnection serverConnection;
 
     /**
@@ -38,7 +38,7 @@ public class ServerClientMediator {
      * @throws IOException see getConnection
      */
     public void messageClient(Request request) throws IOException {
-         getConnection(request.host).receiveMessage(request);
+         getConnection(request.getHost()).receiveMessage(request);
     }
 
     /**
@@ -57,7 +57,7 @@ public class ServerClientMediator {
      * @return connection object representing passed hostname
      * @throws IOException may be thrown in case Socket object cannot be created for the host
      */
-    private ClientConnection getConnection(String hostname) throws IOException {
+    private ClientConnection getConnection(Request.Host hostname) throws IOException {
         if(!clientConnections.containsKey(hostname)){
             ClientConnection con = new ClientConnection(hostname, this);
             clientConnections.put(hostname, con);

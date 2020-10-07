@@ -26,8 +26,8 @@ public class ClientConnection {
      * @param mediator mediator object for communication with the server side
      * @throws IOException construction of Socket object may throw this exception
      */
-    public ClientConnection(String hostname, ServerClientMediator mediator) throws IOException {
-        this.socket = new Socket(hostname, HTTP_PORT);
+    public ClientConnection(Request.Host hostname, ServerClientMediator mediator) throws IOException {
+        this.socket = new Socket(hostname.hostname, hostname.port);
         this.printWriter = new PrintWriter(socket.getOutputStream());
         this.mediator = mediator;
     }
@@ -48,7 +48,6 @@ public class ClientConnection {
      * @return returns received response parsed as a Response object
      */
     public Response readResponse(){
-        System.out.println("read response called");
         byte[] buffer = new byte[4096];
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -75,6 +74,10 @@ public class ClientConnection {
 
                         response = new Response(stringBuilder.toString());
                         contentSize = response.getContentSize();
+
+                        if(contentSize == -1){
+                            break;
+                        }
 
                         contentField = new byte[contentSize];
 
@@ -105,8 +108,16 @@ public class ClientConnection {
      * @param request HTTP request represented by the Request object
      */
     public void writeRequest(Request request) {
-        printWriter.write(request.data);
+        printWriter.write(request.toString());
         printWriter.flush();
+        if (request.getBody() != null){
+            try {
+                socket.getOutputStream().write(request.getBody());
+                socket.getOutputStream().flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

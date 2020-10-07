@@ -15,7 +15,7 @@ public class Filter {
         if (response == null){
             return;
         }
-        if (response.getHeaderValue("Content-Type").contains("text")){
+        if (response.getStatus().contains("200 OK") && response.getHeaderValue("Content-Type").contains("text")){
             response.setBody(new String(response.getBody()).replaceAll(replace, with).getBytes());
         }
 //        response.setData(response.getData().replaceAll(replace, with));
