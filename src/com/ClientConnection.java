@@ -1,13 +1,13 @@
 package com;
 
-import messages.AMessage;
+import messages.Message;
 import messages.RequestMessage;
 
 import java.io.IOException;
 import java.net.Socket;
 
 /**
- * ClientConnection is responsible for developing the connection to client
+ * Socket wrapper for connecting to remote servers
  */
 public class ClientConnection extends AConnection implements IMessageable{
     private final ServerClientMediator mediator;
@@ -25,11 +25,11 @@ public class ClientConnection extends AConnection implements IMessageable{
 
     /**
      * The method receiveMessage is receiving the request from the client and reading the
-     * response from the server as well. Moreover, it's handling the IOException.
-     * @param request this parameter is responsible for getting the request from client of the proxy.
+     * response from the server as well.
+     * @param message this parameter is responsible for getting the request from client of the proxy.
      */
-    public void receiveMessage(AMessage request){
-        writeRequest(request);
-        mediator.messageServer(readResponse());
+    public void receiveMessage(Message message){
+        writeMessage(message);
+        mediator.messageServer(readMessage());
     }
 }

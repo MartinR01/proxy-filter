@@ -1,7 +1,10 @@
 package com;
 
-import messages.AMessage;
+import messages.Message;
 
+/**
+ * Classes Implementing this interface can accept and handle incoming Messages from other classes
+ */
 public interface IMessageable {
-    void receiveMessage(AMessage message);
+    void receiveMessage(Message message);
 }

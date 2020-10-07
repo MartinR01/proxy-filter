@@ -2,9 +2,15 @@ package messages;
 
 import java.util.HashMap;
 
-public class AMessage {
+/**
+ * Represents one message passing through the proxy.
+ */
+public class Message {
+    /** Standard HTTP newline sequence */
     public static final String NEWLINE = "\r\n";
+    /** Standard HTTP ending of headers part of message */
     public static final String HEADERS_END = NEWLINE + NEWLINE;
+    /** Standard HTTP separator of header name and value */
     public static final String HEADER_SEP = ": ";
 
     private final String status;
@@ -13,9 +19,9 @@ public class AMessage {
 
     /**
      * Constructs the object and parses the headers.
-     * @param headers Received HTTP response
+     * @param headers Received HTTP headers
      */
-    public AMessage(String headers){
+    public Message(String headers){
         System.out.println("---- New Message ----\n'"+headers+"'");
         String[] all = headers.split(NEWLINE);
 
@@ -30,10 +36,19 @@ public class AMessage {
         }
     }
 
+    /**
+     * Gets value of specified header
+     * @param name header name
+     * @return header value
+     */
     protected String getHeaderValue(String name){
         return headers.get(name);
     }
 
+    /**
+     * Gets and parses the value of Content-Length header
+     * @return content-length value or -1 if the header was not found
+     */
     public int getContentSize(){
         String contentSizeString = getHeaderValue("content-length");
         if (contentSizeString == null){

@@ -1,39 +1,46 @@
 package com;
 
 import commons.KMP;
-import messages.AMessage;
+import messages.Message;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Arrays;
 
+/**
+ * Handles socket connection - both HTTP-specific reading and writing.
+ */
 public abstract class AConnection {
     private final Socket socket;
     private final PrintWriter printWriter;
 
+    /**
+     * Creates connection object using specified socket
+     * @param socket connected socket
+     * @throws IOException thrown when there is an error constructing IO streams for the socket.
+     */
     public AConnection(Socket socket) throws IOException {
         this.socket = socket;
         this.printWriter = new PrintWriter(socket.getOutputStream());
     }
 
     /**
-     * The method readResponse is responsible for taking and reading the response from user.
-     * IOExceptions are handled as well.
-     * @return returns received response parsed as a Response object
+     * Reads incoming HTTP message
+     * @return received HTTP message
      */
-    public AMessage readResponse(){
+    public Message readMessage(){
         byte[] buffer = new byte[4096];
 
         StringBuilder stringBuilder = new StringBuilder();
         int endIndex = -1;
 
-        AMessage response = null;
+        Message response = null;
 
         int total = 0;
         byte[] contentField = null;
 
-        KMP kmp = new KMP(AMessage.HEADERS_END);
+        KMP kmp = new KMP(Message.HEADERS_END);
         try {
             int read;
             int contentSize = -1;
@@ -49,7 +56,7 @@ public abstract class AConnection {
                     } else {
                         stringBuilder.append(new String((Arrays.copyOfRange(buffer, 0, endIndex - 1))));
 
-                        response = new AMessage(stringBuilder.toString());
+                        response = new Message(stringBuilder.toString());
                         contentSize = response.getContentSize();
 
                         if(contentSize == -1){
@@ -81,15 +88,15 @@ public abstract class AConnection {
     }
 
     /**
-     * Writes a Request object into socket's output stream
-     * @param request HTTP request represented by the Request object
+     * Writes a Message object into socket's output stream
+     * @param message HTTP message
      */
-    public void writeRequest(AMessage request) {
-        printWriter.write(request.toString());
+    public void writeMessage(Message message) {
+        printWriter.write(message.toString());
         printWriter.flush();
-        if (request.getBody() != null){
+        if (message.getBody() != null){
             try {
-                socket.getOutputStream().write(request.getBody());
+                socket.getOutputStream().write(message.getBody());
                 socket.getOutputStream().flush();
             } catch (IOException e) {
                 e.printStackTrace();

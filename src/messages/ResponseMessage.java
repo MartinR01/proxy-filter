@@ -2,20 +2,21 @@ package messages;
 
 /**
  * Response object represents one parsed HTTP response
+ * Adds response-specific parsing functions to Message class.
  */
 public class ResponseMessage{
-    private AMessage message;
+    private final Message message;
 
     /**
      * Constructs the object and parses the headers.
-     * @param headers Received HTTP response
+     * @param message Received HTTP message
      */
-    public ResponseMessage(String headers){
-        this(new AMessage(headers));
+    public ResponseMessage(Message message){
+        this.message = message;
     }
 
-    public ResponseMessage(AMessage message){
-        this.message = message;
+    public ResponseMessage(String headers){
+        this(new Message(headers));
     }
 
     public byte[] getBody(){
@@ -26,7 +27,7 @@ public class ResponseMessage{
         message.setBody(body);
     }
 
-    public AMessage getMessage() {
+    public Message getMessage() {
         return message;
     }
 

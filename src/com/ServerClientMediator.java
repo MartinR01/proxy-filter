@@ -1,8 +1,7 @@
 package com;
 
-import messages.AMessage;
+import messages.Message;
 import messages.RequestMessage;
-import messages.ResponseMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,18 +33,18 @@ public class ServerClientMediator {
 
     /**
      * Sends message to client-side
-     * @param request request received typically by the server-side
+     * @param message request received typically by the server-side
      * @throws IOException see getConnection
      */
-    public void messageClient(AMessage request) throws IOException {
-         getConnection(new RequestMessage(request).getHost()).receiveMessage(request);
+    public void messageClient(Message message) throws IOException {
+         getConnection(new RequestMessage(message).getHost()).receiveMessage(message);
     }
 
     /**
      * Sends message to server-side
      * @param message response received typically by the client-side
      */
-    public void messageServer(AMessage message){
+    public void messageServer(Message message){
         filters.forEach(f -> f.filter(message));
         serverConnection.receiveMessage(message);
     }
@@ -53,16 +52,16 @@ public class ServerClientMediator {
     /**
      * Gets connection object to the passed host.
      * Creates the connection if none has yet been established.
-     * @param hostname url or IP address of host to connect to
+     * @param host url or IP address of host to connect to
      * @return connection object representing passed hostname
      * @throws IOException may be thrown in case Socket object cannot be created for the host
      */
-    private ClientConnection getConnection(RequestMessage.Host hostname) throws IOException {
-        if(!clientConnections.containsKey(hostname)){
-            ClientConnection con = new ClientConnection(hostname, this);
-            clientConnections.put(hostname, con);
+    private ClientConnection getConnection(RequestMessage.Host host) throws IOException {
+        if(!clientConnections.containsKey(host)){
+            ClientConnection con = new ClientConnection(host, this);
+            clientConnections.put(host, con);
             return con;
         }
-        return clientConnections.get(hostname);
+        return clientConnections.get(host);
     }
 }

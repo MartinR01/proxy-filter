@@ -1,28 +1,25 @@
 package messages;
 
-import com.ClientConnection;
-
 /**
  * Request object represents one parsed HTTP request
+ * Adds request-specific parsing functions to Message class.
  */
 public class RequestMessage{
-    /** standard HTTP port to open connection on */
-    public static final int HTTP_PORT = 80;
-    private AMessage message;
+    private final Message message;
 
     /**
      * Constructs the object and parses the headers.
-     * @param headers Received HTTP request
+     * @param message Received HTTP request
      */
-    public RequestMessage(String headers){
-        this(new AMessage(headers));
-    }
-
-    public RequestMessage(AMessage message){
+    public RequestMessage(Message message){
         this.message = message;
     }
 
-    public AMessage getMessage() {
+    public RequestMessage(String headers){
+        this(new Message(headers));
+    }
+
+    public Message getMessage() {
         return message;
     }
 
@@ -54,15 +51,32 @@ public class RequestMessage{
         }
     }
 
+    /**
+     * Represents host header
+     */
     public class Host{
+        /** standard HTTP port to open connection on */
+        public static final int HTTP_PORT = 80;
+
+        /** hostname, either url or ip address */
         public final String hostname;
+        /** port number */
         public final int port;
 
+        /**
+         * Constructs the Host class
+         * @param hostname hostname
+         * @param port port number
+         */
         public Host(String hostname, int port){
             this.hostname = hostname;
             this.port = port;
         }
 
+        /**
+         * Constructs the Host class with default HTTP port
+         * @param hostname hostname
+         */
         public Host(String hostname){
             this.hostname = hostname;
             this.port = HTTP_PORT;

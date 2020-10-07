@@ -1,12 +1,12 @@
 package com;
 
-import messages.AMessage;
+import messages.Message;
 
 import java.io.IOException;
 import java.net.Socket;
 
 /**
- * The class ServerConnection is socket wrapper for serving clients
+ * Socket wrapper for serving clients
  */
 public class ServerConnection extends AConnection implements IMessageable{
     private final ServerClientMediator mediator;
@@ -26,7 +26,7 @@ public class ServerConnection extends AConnection implements IMessageable{
      */
     public void run(){
         try {
-            AMessage request = readResponse();
+            Message request = readMessage();
             if(request == null){
                 return;
             }
@@ -40,8 +40,8 @@ public class ServerConnection extends AConnection implements IMessageable{
      * Writes received response to socket's output, then starts reading another request
      * @param response received response object
      */
-    public void receiveMessage(AMessage response){
-        writeRequest(response);
+    public void receiveMessage(Message response){
+        writeMessage(response);
         run();
     }
 
