@@ -2,7 +2,12 @@
 Proxy server that changes content of HTTP traffic.
 
 # Tests
-## Scenario 1
+- [Scenario 1 - text file](http://zebroid.ida.liu.se/fakenews/test1.txt)
+- [Scenario 2 - HTML file](http://zebroid.ida.liu.se/fakenews/test2.html)
+- [Scenario 3 - HTML with link](http://zebroid.ida.liu.se/fakenews/test3.html)
+- [Scenario 4 - HTML with embedded images](http://zebroid.ida.liu.se/fakenews/test4.html)
+
+## Using telnet
 - after running the proxy, telnet into it:
 ```
 telnet localhost 8080

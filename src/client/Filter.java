@@ -2,22 +2,40 @@ package client;
 
 import data.Response;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Filter {
+    public static final Pattern HTMLPattern = Pattern.compile(">([\\w\\W]+?)<");
     public final String replace;
     public final String with;
+    public final boolean onlyText;
 
-    public Filter(String replace, String with){
+    public Filter(String replace, String with, boolean onlyText){
         this.replace = replace;
         this.with = with;
+        this.onlyText = onlyText;
     }
 
     public void filter(Response response){
         if (response == null){
             return;
         }
-        if (response.getHeaderValue("Content-Type").contains("text")){
-            response.setBody(new String(response.getBody()).replaceAll(replace, with).getBytes());
+        if (response.getStatus().contains("200 OK") && response.getHeaderValue("Content-Type").contains("text")){
+            String body = new String(response.getBody());
+            if(onlyText && response.getHeaderValue("Content-Type").contains("text/html")) {
+                Matcher matcher = HTMLPattern.matcher(body);
+                StringBuffer stringBuffer = new StringBuffer();
+                while (matcher.find()) {
+                    matcher.appendReplacement(stringBuffer, body.substring(matcher.start(), matcher.start(1))
+                            + matcher.group(1).replaceAll(replace, with)
+                            + body.substring(matcher.end(1), matcher.end()));
+                }
+                matcher.appendTail(stringBuffer);
+                response.setBody(stringBuffer.toString().getBytes());
+            } else {
+                response.setBody(body.replaceAll(replace, with).getBytes());
+            }
         }
-//        response.setData(response.getData().replaceAll(replace, with));
     }
 }
