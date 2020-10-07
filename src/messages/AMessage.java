@@ -3,6 +3,10 @@ package messages;
 import java.util.HashMap;
 
 public class AMessage {
+    public static final String NEWLINE = "\r\n";
+    public static final String HEADERS_END = NEWLINE + NEWLINE;
+    public static final String HEADER_SEP = ": ";
+
     private final String status;
     private final HashMap<String, String> headers;
     private byte[] body;
@@ -13,14 +17,14 @@ public class AMessage {
      */
     public AMessage(String headers){
         System.out.println("---- New Message ----\n'"+headers+"'");
-        String[] all = headers.split("\r\n");
+        String[] all = headers.split(NEWLINE);
 
         this.headers = new HashMap<>();
         this.status = all[0];
 
         for (int i = 1; i < all.length; i++){
-            if (all[i].contains(": ")){
-                String[] keyValue = all[i].split(": ");
+            if (all[i].contains(HEADER_SEP)){
+                String[] keyValue = all[i].split(HEADER_SEP);
                 this.headers.put(keyValue[0].toLowerCase(), keyValue[1]);
             }
         }
@@ -53,11 +57,11 @@ public class AMessage {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(status + "\r\n");
+        stringBuilder.append(status + NEWLINE);
         for (String key : headers.keySet()){
-            stringBuilder.append(key + ": "+ headers.get(key) + "\r\n");
+            stringBuilder.append(key + HEADER_SEP+ headers.get(key) + NEWLINE);
         }
-        stringBuilder.append("\r\n");
+        stringBuilder.append(NEWLINE);
 
         return stringBuilder.toString();
     }

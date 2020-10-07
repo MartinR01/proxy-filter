@@ -2,6 +2,7 @@ package com;
 
 import com.ServerClientMediator;
 import commons.KMP;
+import messages.AMessage;
 import messages.RequestMessage;
 import messages.ResponseMessage;
 
@@ -76,7 +77,7 @@ public class ServerConnection {
         int total = 0;
         byte[] contentField = null;
 
-        KMP kmp = new KMP("\r\n\r\n");
+        KMP kmp = new KMP(AMessage.HEADERS_END);
         try {
             int read;
             int contentSize = -1;

@@ -1,6 +1,7 @@
 package com;
 
 import commons.KMP;
+import messages.AMessage;
 import messages.RequestMessage;
 import messages.ResponseMessage;
 
@@ -58,7 +59,7 @@ public class ClientConnection {
         int total = 0;
         byte[] contentField = null;
 
-        KMP kmp = new KMP("\r\n\r\n");
+        KMP kmp = new KMP(AMessage.HEADERS_END);
         try {
             int read;
             int contentSize = -1;
