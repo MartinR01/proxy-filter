@@ -1,6 +1,6 @@
-package client;
+package com;
 
-import data.Response;
+import messages.ResponseMessage;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,7 +17,7 @@ public class Filter {
         this.onlyText = onlyText;
     }
 
-    public void filter(Response response){
+    public void filter(ResponseMessage response){
         if (response == null){
             return;
         }

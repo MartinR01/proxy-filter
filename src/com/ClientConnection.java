@@ -1,8 +1,8 @@
-package client;
+package com;
 
-import common.KMP;
-import data.Request;
-import data.Response;
+import commons.KMP;
+import messages.RequestMessage;
+import messages.ResponseMessage;
 
 import java.io.*;
 import java.net.Socket;
@@ -26,7 +26,7 @@ public class ClientConnection {
      * @param mediator mediator object for communication with the server side
      * @throws IOException construction of Socket object may throw this exception
      */
-    public ClientConnection(Request.Host hostname, ServerClientMediator mediator) throws IOException {
+    public ClientConnection(RequestMessage.Host hostname, ServerClientMediator mediator) throws IOException {
         this.socket = new Socket(hostname.hostname, hostname.port);
         this.printWriter = new PrintWriter(socket.getOutputStream());
         this.mediator = mediator;
@@ -37,7 +37,7 @@ public class ClientConnection {
      * response from the server as well. Moreover, it's handling the IOException.
      * @param request this parameter is responsible for getting the request from client of the proxy.
      */
-    public void receiveMessage(Request request){
+    public void receiveMessage(RequestMessage request){
         writeRequest(request);
         mediator.messageServer(readResponse());
     }
@@ -47,13 +47,13 @@ public class ClientConnection {
      * IOExceptions are handled as well.
      * @return returns received response parsed as a Response object
      */
-    public Response readResponse(){
+    public ResponseMessage readResponse(){
         byte[] buffer = new byte[4096];
 
         StringBuilder stringBuilder = new StringBuilder();
         int endIndex = -1;
 
-        Response response = null;
+        ResponseMessage response = null;
 
         int total = 0;
         byte[] contentField = null;
@@ -72,7 +72,7 @@ public class ClientConnection {
                     } else {
                         stringBuilder.append(new String((Arrays.copyOfRange(buffer, 0, endIndex - 1))));
 
-                        response = new Response(stringBuilder.toString());
+                        response = new ResponseMessage(stringBuilder.toString());
                         contentSize = response.getContentSize();
 
                         if(contentSize == -1){
@@ -107,7 +107,7 @@ public class ClientConnection {
      * Writes a Request object into socket's output stream
      * @param request HTTP request represented by the Request object
      */
-    public void writeRequest(Request request) {
+    public void writeRequest(RequestMessage request) {
         printWriter.write(request.toString());
         printWriter.flush();
         if (request.getBody() != null){

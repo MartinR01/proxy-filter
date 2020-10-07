@@ -1,21 +1,18 @@
-package data;
+package messages;
 
 import java.util.HashMap;
 
-/**
- * Response object represents one parsed HTTP response
- */
-public class Response {
-    private String status;
-    private HashMap<String, String> headers;
+public class AMessage {
+    private final String status;
+    private final HashMap<String, String> headers;
     private byte[] body;
 
     /**
      * Constructs the object and parses the headers.
      * @param headers Received HTTP response
      */
-    public Response(String headers){
-        System.out.println("---- New Response ----\n'"+headers+"'");
+    public AMessage(String headers){
+        System.out.println("---- New Message ----\n'"+headers+"'");
         String[] all = headers.split("\r\n");
 
         this.headers = new HashMap<>();
@@ -29,12 +26,8 @@ public class Response {
         }
     }
 
-    private String getHeaderValue(String name){
+    protected String getHeaderValue(String name){
         return headers.get(name);
-    }
-
-    public String getContentType(){
-        return getHeaderValue("content-type");
     }
 
     public int getContentSize(){
@@ -56,8 +49,6 @@ public class Response {
     public byte[] getBody() {
         return body;
     }
-
-
 
     @Override
     public String toString() {

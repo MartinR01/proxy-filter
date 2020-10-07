@@ -1,9 +1,9 @@
-package server;
+package com;
 
-import client.ServerClientMediator;
-import common.KMP;
-import data.Request;
-import data.Response;
+import com.ServerClientMediator;
+import commons.KMP;
+import messages.RequestMessage;
+import messages.ResponseMessage;
 
 import java.io.*;
 import java.net.Socket;
@@ -37,7 +37,7 @@ public class ServerConnection {
      */
     public void run(){
         try {
-            Request request = readRequest();
+            RequestMessage request = readRequest();
             if(request == null){
                 return;
             }
@@ -51,7 +51,7 @@ public class ServerConnection {
      * Writes received response to socket's output, then starts reading another request
      * @param response received response object
      */
-    public void receiveMessage(Response response){
+    public void receiveMessage(ResponseMessage response){
         try {
             writeResponse(response);
         } catch (IOException e) {
@@ -63,15 +63,15 @@ public class ServerConnection {
     /**
      * Reads incoming request and encapsulates it into a Request object
      * @return parsed request
-     * @throws IOException see {@link Request}
+     * @throws IOException see {@link RequestMessage}
      */
-    public Request readRequest() throws IOException {
+    public RequestMessage readRequest() throws IOException {
         byte[] buffer = new byte[4096];
 
         StringBuilder stringBuilder = new StringBuilder();
         int endIndex = -1;
 
-        Request request = null;
+        RequestMessage request = null;
 
         int total = 0;
         byte[] contentField = null;
@@ -93,7 +93,7 @@ public class ServerConnection {
                     } else {
                         stringBuilder.append(new String((Arrays.copyOfRange(buffer, 0, endIndex - 1))));
 
-                        request = new Request(stringBuilder.toString());
+                        request = new RequestMessage(stringBuilder.toString());
                         contentSize = request.getContentSize();
 
                         if(contentSize == -1){
@@ -129,7 +129,7 @@ public class ServerConnection {
      * @param response HTTP response represented by the Response object
      * @throws IOException thrown by BufferedWriter
      */
-    public void writeResponse(Response response) throws IOException {
+    public void writeResponse(ResponseMessage response) throws IOException {
         if(response != null){
             writer.write(response.toString());
             writer.flush();
