@@ -1,6 +1,8 @@
-package com;
+package conn;
 
-import messages.Message;
+import msg.IMessageable;
+import msg.Message;
+import msg.ServerClientMediator;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -8,7 +10,7 @@ import java.net.Socket;
 /**
  * Socket wrapper for serving clients
  */
-public class ServerConnection implements IMessageable{
+public class ServerConnection implements IMessageable {
     private final ServerClientMediator mediator;
     private final Connection connection;
 

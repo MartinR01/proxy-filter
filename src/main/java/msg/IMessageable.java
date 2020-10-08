@@ -1,6 +1,4 @@
-package com;
-
-import messages.Message;
+package msg;
 
 /**
  * Classes Implementing this interface can accept and handle incoming Messages from other classes

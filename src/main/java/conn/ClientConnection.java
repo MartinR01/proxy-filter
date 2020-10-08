@@ -1,7 +1,9 @@
-package com;
+package conn;
 
-import messages.Message;
-import messages.RequestMessage;
+import msg.IMessageable;
+import msg.Message;
+import msg.RequestMessage;
+import msg.ServerClientMediator;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -9,7 +11,7 @@ import java.net.Socket;
 /**
  * Socket wrapper for connecting to remote servers
  */
-public class ClientConnection implements IMessageable{
+public class ClientConnection implements IMessageable {
     private final ServerClientMediator mediator;
     private final Connection connection;
 

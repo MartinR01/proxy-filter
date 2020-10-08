@@ -1,7 +1,7 @@
-package com;
+package msg;
 
-import messages.Message;
-import messages.RequestMessage;
+import conn.ClientConnection;
+import conn.ServerConnection;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,7 +1,4 @@
-package com;
-
-import messages.Message;
-import messages.ResponseMessage;
+package msg;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

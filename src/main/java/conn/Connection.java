@@ -1,7 +1,7 @@
-package com;
+package conn;
 
-import commons.KMP;
-import messages.Message;
+import com.KMP;
+import msg.Message;
 
 import java.io.IOException;
 import java.io.PrintWriter;

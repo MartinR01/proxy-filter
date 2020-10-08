@@ -1,4 +1,4 @@
-package messages;
+package msg;
 
 /**
  * Response object represents one parsed HTTP response
