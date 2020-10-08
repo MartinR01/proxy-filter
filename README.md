@@ -1,7 +1,34 @@
 # fake-news
-Proxy server that changes content of HTTP traffic.
+Proxy server that changes content of HTTP traffic delivered to the client. 
+Non-text traffic and other protocols are simply forwarded.
+
+### Current filters:
+- every mention of **Stockholm** in text is changed to **Linköping**
+- every mention of **Smiley** in text is changed to **Trolly**
+- every image name **"smiley.jpg"** anywhere in HTML file is changed to **"trolley.jpg"**
+
+## Requirements
+- JDK >= 8
+- Maven
+
+## Installation
+Build executable jar from project root directory.
+```
+mvn clean package
+```
+
+## Usage
+1. Run application
+```
+java -jar path/to/fake-news-1.0.jar
+```
+
+2. Setup your browser to direct the HTTP traffic through `localhost` (or `127.0.0.1`) at port `8080`
+3. The proxy will work seamlessly, but altering incoming content accordingly
+4. Feel free to test using given test scenarios (with and without the proxy on)
 
 # Tests
+*The application was tested using **Mozilla Firefox 81.0** on **Linux Mint 19.3** with **JDK 1.8.0_265***
 - [Scenario 1 - text file](http://zebroid.ida.liu.se/fakenews/test1.txt)
 - [Scenario 2 - HTML file](http://zebroid.ida.liu.se/fakenews/test2.html)
 - [Scenario 3 - HTML with link](http://zebroid.ida.liu.se/fakenews/test3.html)
